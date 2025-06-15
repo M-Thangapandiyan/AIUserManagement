@@ -1,52 +1,61 @@
 package com.example.usermanagement.repository
 
 import com.example.usermanagement.data.User
-import com.example.usermanagement.data.UserDao
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
-interface IUserRepository {
-    /**
-     * A [Flow] that emits a [List] of all [User] objects from the data source.
-     */
-    val allUsers: Flow<List<User>>
+class UserRepository : IUserRepository {
 
-    /**
-     * Retrieves a [User] by their unique [id].
-     * @param id The ID of the user to retrieve.
-     * @return The [User] object if found, or `null` otherwise.
-     */
-    suspend fun getUserById(id: Long): User?
+    private val _users = MutableStateFlow<List<User>>(emptyList())
 
-    /**
-     * Retrieves a [User] by their unique [email].
-     * @param email The email of the user to retrieve.
-     * @return The [User] object if found, or `null` otherwise.
-     */
-    suspend fun getUserByEmail(email: String): User?
+    override val allUsers: Flow<List<User>> = _users.asStateFlow()
 
-    /**
-     * Inserts a new [User] into the data source.
-     * @param user The [User] object to insert.
-     * @return The ID of the newly inserted user.
-     */
-    suspend fun insertUser(user: User): Long
+    override suspend fun getUserById(id: Long): User? {
+        return _users.value.find { it.id == id }
+    }
 
-    /**
-     * Updates an existing [User] in the data source.
-     * @param user The [User] object to update.
-     */
-    suspend fun updateUser(user: User)
+    override suspend fun getUserByEmail(email: String): User? {
+        return _users.value.find { it.email == email }
+    }
 
-    /**
-     * Deletes a [User] from the data source.
-     * @param user The [User] object to delete.
-     */
-    suspend fun deleteUser(user: User)
+    override suspend fun insertUser(user: User): Long {
+        // In a real scenario, you'd assign a new ID. For a fake, a simple increment or fixed value might suffice.
+        val newId = (_users.value.maxOfOrNull { it.id } ?: 0L) + 1
+        _users.value = _users.value + user.copy(id = newId)
+        return newId
+    }
 
-    /**
-     * Searches for users whose first or last name matches the given [query].
-     * @param query The search string.
-     * @return A [Flow] emitting a [List] of [User] objects that match the query.
-     */
-    fun searchUsers(query: String): Flow<List<User>>
+    override suspend fun updateUser(user: User) {
+        _users.value = _users.value.map { if (it.id == user.id) user else it }
+    }
+
+    override suspend fun deleteUser(user: User) {
+        _users.value = _users.value.filter { it.id != user.id }
+    }
+
+    override fun searchUsers(query: String): Flow<List<User>> {
+        return _users.map { userList ->
+            if (query.isBlank()) {
+                userList
+            } else {
+                userList.filter {
+                    it.firstName.contains(query, ignoreCase = true) ||
+                            it.lastName.contains(query, ignoreCase = true) ||
+                            it.email.contains(query, ignoreCase = true)
+                }
+            }
+        }
+    }
+
+    // Helper function to set the current list of users for testing scenarios
+    fun setUsers(users: List<User>) {
+        _users.value = users
+    }
+
+    // Helper function to clear all users
+    fun clearUsers() {
+        _users.value = emptyList()
+    }
 } 

@@ -8,21 +8,16 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import android.app.Application
-import com.example.usermanagement.repository.FakeUserRepository
+import com.example.usermanagement.repository.UserRepository
 import com.example.usermanagement.data.User
-import android.view.View
-import android.widget.EditText
-import android.widget.Button
-import android.R
-import org.junit.Assert
 
-class MainScreenTest {
+class DrawerScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<TestActivity>()
 
     private fun setupViewModel(): UserViewModel {
         val mockApplication = mock(Application::class.java)
-        val fakeUserRepository = FakeUserRepository()
+        val fakeUserRepository = UserRepository()
         return UserViewModel(mockApplication, fakeUserRepository)
     }
 
