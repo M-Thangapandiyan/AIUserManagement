@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">User Management</string>
+
+    <!-- Screen Titles -->
+    <string name="screen_user_management">User Management</string>
+    <string name="screen_add_user">Add User</string>
+    <string name="screen_edit_user">Edit User</string>
+
+    <!-- Form Labels -->
+    <string name="label_first_name">First Name</string>
+    <string name="label_last_name">Last Name</string>
+    <string name="label_email">Email</string>
+    <string name="label_phone">Phone</string>
+
+    <!-- Buttons -->
+    <string name="button_save">Save</string>
+    <string name="button_edit">Edit</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- Validation Messages -->
+    <string name="error_first_name_empty">First name cannot be empty</string>
+    <string name="error_last_name_empty">Last name cannot be empty</string>
+    <string name="error_email_empty">Email cannot be empty</string>
+    <string name="error_email_invalid">Invalid email format</string>
+    <string name="error_phone_empty">Phone number cannot be empty</string>
+    <string name="error_phone_invalid">Invalid phone number format</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_delete_confirmation">Are you sure you want to delete %1$s?</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="no_users_found">No users found</string>
+
+    <!-- Search Bar Hint -->
+    <string name="search_hint">Search by name</string>
+</resources>
