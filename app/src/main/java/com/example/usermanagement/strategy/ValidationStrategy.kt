@@ -5,6 +5,9 @@ import com.example.usermanagement.R
 import com.example.usermanagement.data.User
 import com.example.usermanagement.util.ValidationResult
 import com.example.usermanagement.util.ValidationUtils
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.ResolverStyle
 
 interface ValidationStrategy {
     fun validate(user: User): ValidationResult
@@ -25,7 +28,20 @@ class UserValidationStrategy(private val context: Context) : ValidationStrategy 
                 ValidationResult.error(context.getString(R.string.error_phone_empty))
             !ValidationUtils.isValidPhone(user.phone) -> 
                 ValidationResult.error(context.getString(R.string.error_phone_invalid))
-            else -> ValidationResult.success()
+            user.dob.isBlank() ->
+                ValidationResult.error(context.getString(R.string.error_dob_empty))
+            !ValidationUtils.isValidDate(user.dob) ->
+                ValidationResult.error(context.getString(R.string.error_dob_invalid))
+            else -> {
+                val trimmedDob = user.dob.trim()
+                val dob = LocalDate.parse(trimmedDob, DateTimeFormatter.ISO_LOCAL_DATE)
+                val today = LocalDate.now()
+                if (dob.isAfter(today)) {
+                    ValidationResult.error(context.getString(R.string.error_dob_future))
+                } else {
+                    ValidationResult.success()
+                }
+            }
         }
     }
 } 

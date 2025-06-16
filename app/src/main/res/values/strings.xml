@@ -28,6 +28,9 @@
     <string name="error_email_invalid">Invalid email format</string>
     <string name="error_phone_empty">Phone number cannot be empty</string>
     <string name="error_phone_invalid">Invalid phone number format</string>
+    <string name="error_dob_empty">Date of birth is required</string>
+    <string name="error_dob_invalid">Invalid date of birth format. Please use YYYY-MM-DD</string>
+    <string name="error_dob_future">Date of birth cannot be in the future</string>
 
     <!-- Dialog Messages -->
     <string name="dialog_delete_confirmation">Are you sure you want to delete %1$s?</string>

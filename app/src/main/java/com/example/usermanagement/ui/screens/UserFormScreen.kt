@@ -3,6 +3,8 @@ package com.example.usermanagement.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,6 +58,8 @@ fun UserFormScreen(
                 lastName = ""
                 email = ""
                 phone = ""
+                dob = ""
+                address = ""
             }
         )
     }
@@ -113,7 +117,12 @@ fun UserFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditMode) "Edit User" else "Add User", modifier = Modifier.testTag("user_form_title")) },
+                title = {
+                    Text(
+                        if (isEditMode) "Edit User" else "Add User",
+                        modifier = Modifier.testTag("user_form_title")
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -127,23 +136,26 @@ fun UserFormScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
                 .testTag("user_details_screen")
         ) {
-            UserForm(
-                initialState = user,
-                onUserChange = { user = it },
-                onSubmit = {
-                    scope.launch {
-                        if (isEditMode) {
-                            viewModel.updateUser(user)
-                        } else {
-                            viewModel.addUser(user)
+            // Add padding inside the scrollable content
+            Column(modifier = Modifier.padding(16.dp)) {
+                UserForm(
+                    initialState = user,
+                    onUserChange = { user = it },
+                    onSubmit = {
+                        scope.launch {
+                            if (isEditMode) {
+                                viewModel.updateUser(user)
+                            } else {
+                                viewModel.addUser(user)
+                            }
+                            onNavigateBack()
                         }
-                        onNavigateBack()
                     }
-                }
-            )
+                )
+            }
         }
     }
-} 
+}

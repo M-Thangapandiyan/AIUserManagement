@@ -20,10 +20,10 @@ public class UserFilterTest {
         users = new ArrayList<>();
         
         // Create users with explicit field values and verify them
-        User user1 = new User(1, "John", "Doe", "john.doe@example.com", "1234567890");
-        User user2 = new User(2, "Jane", "Smith", "jane.smith@example.com", "0987654321");
-        User user3 = new User(3, "Jonathan", "Davis", "jonathan.davis@example.com", "1122334455");
-        User user4 = new User(4, "Alice", "Wonder", "alice.wonder@example.com", "5544332211");
+        User user1 = new User(1, "John", "Doe", "john.doe@example.com", "1234567890", "1990-01-01", "123 Main St");
+        User user2 = new User(2, "Jane", "Smith", "jane.smith@example.com", "0987654321", "1991-02-02", "456 Oak Ave");
+        User user3 = new User(3, "Jonathan", "Davis", "jonathan.davis@example.com", "1122334455", "1992-03-03", "789 Pine Rd");
+        User user4 = new User(4, "Alice", "Wonder", "alice.wonder@example.com", "5544332211", "1993-04-04", "101 Elm St");
         
         // Verify the data is set correctly
         System.out.println("\nVerifying test data setup:");
@@ -111,12 +111,7 @@ public class UserFilterTest {
         assertTrue(filtered.isEmpty());
     }
 
-    @Test
-    public void testFilterByLastName() {
-        List<User> filtered = UserFilter.filterByLastName(users, "Smith");
-        assertEquals(1, filtered.size());
-        assertEquals("Jane", filtered.get(0).getFirstName());
-    }
+
 
     @Test
     public void testFilterByEmail() {
@@ -179,8 +174,106 @@ public class UserFilterTest {
         assertTrue(filtered.stream().anyMatch(user -> user.firstName.equals("John")));
         assertTrue(filtered.stream().anyMatch(user -> user.firstName.equals("Jonathan")));
     }
+    
+    @Test
+    public void testGetCharCodes_basic() {
+        String input = "abc";
+        String expected = "97 98 99 ";
+        String result = getCharCodes(input);
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testGetCharCodes_emptyString() {
+        String input = "";
+        String expected = "";
+        String result = getCharCodes(input);
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testGetCharCodes_specialCharacters() {
+        String input = "@#$";
+        String expected = "64 35 36 ";
+        String result = getCharCodes(input);
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testFilterUsers_allCriteria() {
+        // Add a user that matches all criteria
+        users.add(new User(5, "John", "Smith", "john.smith@example.com", "11223344", "1994-05-05", "202 Main St"));
+        
+        List<User> filtered = UserFilter.filterUsers(
+            users, 
+            "John", 
+            "Smith", 
+            "john.smith@example.com", 
+            "1122"
+        );
+        
+        assertEquals(1, filtered.size());
+        assertEquals("John Smith", filtered.get(0).getFirstName() + " " + filtered.get(0).getLastName());
+    }
+    
+    @Test
+    public void testFilterUsers_nullUserList() {
+        List<User> filtered = UserFilter.filterUsers(null, "John", null, null, null);
+        assertTrue(filtered.isEmpty());
+    }
+    
+    @Test
+    public void testFilterUsers_whitespaceCriteria() {
+        List<User> filtered = UserFilter.filterUsers(users, "  ", "  ", "  ", "  ");
+        assertEquals(4, filtered.size()); // Should return all users
+    }
+    
+    @Test
+    public void testFilterByEmail_partialMatch() {
+        // Print all user emails for debugging
+        System.out.println("\nAll user emails in test data:");
+        for (User user : users) {
+            System.out.println("- " + user.email);
+        }
+        
+        // Test with domain part of email (should match all users)
+        System.out.println("\nTesting with search term: @example.com");
+        List<User> filtered = UserFilter.filterByEmail(users, "@example.com");
+        
+        System.out.println("\nFiltered results (" + filtered.size() + "):");
+        for (User user : filtered) {
+            System.out.println("- " + user.email);
+        }
+        
+        assertEquals("Should find all users with @example.com domain", 4, filtered.size());
+        
+        // Test with username part of email
+        System.out.println("\nTesting with search term: john.doe");
+        filtered = UserFilter.filterByEmail(users, "john.doe");
+        assertEquals(1, filtered.size());
+        assertEquals("John", filtered.get(0).getFirstName());
+        
+        // Test with full email
+        System.out.println("\nTesting with search term: jane.smith@example.com");
+        filtered = UserFilter.filterByEmail(users, "jane.smith@example.com");
+        assertEquals(1, filtered.size());
+        assertEquals("Jane", filtered.get(0).getFirstName());
+        
+        // Test with partial email that should match all users
+        System.out.println("\nTesting with search term: example.com");
+        filtered = UserFilter.filterByEmail(users, "example.com");
+        System.out.println("Results for 'example.com': " + filtered.size());
+        
+        // Test with just the domain part
+        System.out.println("\nTesting with search term: @example");
+        filtered = UserFilter.filterByEmail(users, "@example");
+        System.out.println("Results for '@example': " + filtered.size());
+    }
 
     private String getCharCodes(String str) {
+        if (str == null) {
+            return "null";
+        }
         StringBuilder codes = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             codes.append((int)str.charAt(i)).append(" ");

@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.usermanagement.ui.screens.MainScreen
+import com.example.usermanagement.ui.screens.DrawerScreen
 import com.example.usermanagement.ui.theme.UserManagementTheme
 import com.example.usermanagement.viewmodel.UserViewModel
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                         factory = UserViewModel.UserViewModelFactory(application, repository)
                     )
 
-                    MainScreen(
+                    DrawerScreen(
                         viewModel = viewModel,
                         onLogout = {
                             // TODO: Implement proper logout functionality (e.g., clear user session, navigate to login screen)

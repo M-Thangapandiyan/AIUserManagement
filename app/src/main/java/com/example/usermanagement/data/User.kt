@@ -22,7 +22,11 @@ data class User(
     @JvmField
     var email: String = "",
     @JvmField
-    var phone: String = ""
+    var phone: String = "",
+    @JvmField
+    var dob: String = "",
+    @JvmField
+    var address: String = ""
 ) {
     /**
      * Gets the user's full name
@@ -36,5 +40,7 @@ data class User(
     fun getLastName(): String = lastName
     fun getEmail(): String = email
     fun getPhone(): String = phone
+    fun getDob(): String = dob
+    fun getAddress(): String = address
     fun getId(): Long = id
 } 

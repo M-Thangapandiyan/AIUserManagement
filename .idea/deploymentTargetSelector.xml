@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UserFilterTest">
+      <SelectionState runConfigName="DrawerScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="EdgeCaseTest">
+      <SelectionState runConfigName="whenApplyFilter_shouldShowFilteredResults()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UserCreationTest">
+      <SelectionState runConfigName="whenSwipeToDelete_shouldRemoveUser()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="MainScreenTest">
+      <SelectionState runConfigName="testUpdateUser()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="whenFilterApplied_shouldShowFilteredResults()">
+      <SelectionState runConfigName="testNavigateToAddUserScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

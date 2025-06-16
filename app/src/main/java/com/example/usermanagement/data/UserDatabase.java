@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 /**
  * Main database class for the application
  */
-@Database(entities = {User.class}, version = 7, exportSchema = false)
+@Database(entities = {User.class}, version = 8, exportSchema = false)
 public abstract class UserDatabase extends RoomDatabase {
     private static volatile UserDatabase INSTANCE;
 
@@ -35,7 +35,8 @@ public abstract class UserDatabase extends RoomDatabase {
                             UserDatabase.class,
                             "user_database"
                         )
-                        .addMigrations(MIGRATION_6_7)
+                        .addMigrations(MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
+                        .fallbackToDestructiveMigration() // Added as safety net
                         .build();
                 }
             }
@@ -90,4 +91,17 @@ public abstract class UserDatabase extends RoomDatabase {
             database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_users_email` ON `users` (`email`)");
         }
     };
-} 
+
+    /**
+     * Migration from version 7 to 8
+     * Adds dob and address columns to users table
+     */
+    public static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Add new columns with empty string defaults
+            database.execSQL("ALTER TABLE users ADD COLUMN dob TEXT DEFAULT ''");
+            database.execSQL("ALTER TABLE users ADD COLUMN address TEXT DEFAULT ''");
+        }
+    };
+}

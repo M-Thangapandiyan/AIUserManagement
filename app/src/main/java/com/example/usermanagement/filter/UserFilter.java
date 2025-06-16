@@ -64,12 +64,25 @@ public class UserFilter {
      */
     public static List<User> filterByLastName(List<User> users, String lastName) {
         List<User> filteredUsers = new ArrayList<>();
+        
+        // Handle null or empty lastName parameter
+        if (lastName == null || lastName.trim().isEmpty()) {
+            System.out.println("\nNo last name filter provided, returning all users");
+            return new ArrayList<>(users);
+        }
+        
         String searchTerm = lastName.toLowerCase().trim();
         System.out.println("\nFiltering by last name:");
         System.out.println("Search term: '" + searchTerm + "'");
         System.out.println("Total users to check: " + users.size());
         
         for (User user : users) {
+            // Skip users with null lastName
+            if (user.lastName == null) {
+                System.out.println("✗ Skipping user with null last name: " + user.firstName);
+                continue;
+            }
+            
             String userLastName = user.lastName.toLowerCase().trim();
             System.out.println("\nChecking user: '" + user.firstName + " " + userLastName + "'");
             boolean startsWith = userLastName.startsWith(searchTerm);
@@ -109,10 +122,10 @@ public class UserFilter {
             String userEmail = user.email.toLowerCase().trim();
             System.out.println("\nChecking user: '" + user.firstName + " " + user.lastName + "'");
             System.out.println("Email: '" + userEmail + "'");
-            boolean startsWith = userEmail.startsWith(searchTerm);
-            System.out.println("StartsWith check: '" + userEmail + "' starts with '" + searchTerm + "' = " + startsWith);
+            boolean contains = userEmail.contains(searchTerm);
+            System.out.println("Contains check: '" + userEmail + "' contains '" + searchTerm + "' = " + contains);
             
-            if (startsWith) {
+            if (contains) {
                 System.out.println("✓ Match found: " + user.firstName + " " + user.lastName);
                 filteredUsers.add(user);
             } else {
@@ -176,6 +189,9 @@ public class UserFilter {
      * @return Filtered list of users
      */
     public static List<User> filterUsers(List<User> users, String firstName, String lastName, String email, String phone) {
+        if (users == null) {
+            return new ArrayList<>();
+        }
         List<User> filteredUsers = new ArrayList<>(users);
         System.out.println("\nStarting filterUsers with " + filteredUsers.size() + " users");
         

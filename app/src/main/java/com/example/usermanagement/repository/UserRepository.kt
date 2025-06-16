@@ -49,13 +49,4 @@ class UserRepository : IUserRepository {
         }
     }
 
-    // Helper function to set the current list of users for testing scenarios
-    fun setUsers(users: List<User>) {
-        _users.value = users
-    }
-
-    // Helper function to clear all users
-    fun clearUsers() {
-        _users.value = emptyList()
-    }
-} 
+}

@@ -20,7 +20,7 @@ data class FormState(
 )
 
 enum class UserField {
-    FIRST_NAME, LAST_NAME, EMAIL, PHONE
+    FIRST_NAME, LAST_NAME, EMAIL, PHONE, DOB, ADDRESS
 }
 
 /**
@@ -59,6 +59,13 @@ fun UserForm(
                 !ValidationUtils.isValidPhone(value) -> "Invalid phone format"
                 else -> null
             }
+            UserField.DOB -> when {
+                ValidationUtils.isFieldBlank(value) -> "Date of birth is required"
+                !ValidationUtils.isValidDate(value) -> "Invalid date format (yyyy-MM-dd)"
+                else -> null
+            }
+            UserField.ADDRESS -> if (ValidationUtils.isFieldBlank(value)) 
+                "Address is required" else null
         }
     }
 
@@ -68,6 +75,8 @@ fun UserForm(
             UserField.LAST_NAME -> formState.user.copy(lastName = value)
             UserField.EMAIL -> formState.user.copy(email = value)
             UserField.PHONE -> formState.user.copy(phone = value)
+            UserField.DOB -> formState.user.copy(dob = value)
+            UserField.ADDRESS -> formState.user.copy(address = value)
         }
         
         val errors = validateField(field, value)
@@ -85,6 +94,8 @@ fun UserForm(
                 UserField.LAST_NAME -> formState.user.lastName
                 UserField.EMAIL -> formState.user.email
                 UserField.PHONE -> formState.user.phone
+                UserField.DOB -> formState.user.dob
+                UserField.ADDRESS -> formState.user.address
             })
         }
         formState = formState.copy(errors = errors.mapKeys { it.key.name })
@@ -131,6 +142,27 @@ fun UserForm(
             supportingText = { formState.errors[UserField.PHONE.name]?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = formState.user.dob,
+            onValueChange = { updateField(UserField.DOB, it) },
+            label = { Text("Date of Birth (yyyy-MM-dd)") },
+            isError = formState.errors[UserField.DOB.name] != null,
+            supportingText = { formState.errors[UserField.DOB.name]?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = formState.user.address,
+            onValueChange = { updateField(UserField.ADDRESS, it) },
+            label = { Text("Address") },
+            isError = formState.errors[UserField.ADDRESS.name] != null,
+            supportingText = { formState.errors[UserField.ADDRESS.name]?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 3
         )
 
         Button(
